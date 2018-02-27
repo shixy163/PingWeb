@@ -1,0 +1,46 @@
+﻿@{
+    ViewBag.Title = "Ping Web";
+}
+
+<h1 id="errorInfo"></h1>
+<table id="errorTable" style="width:50%;">
+    <tr>
+        <td>
+            序号
+        </td>
+        <td>
+            ip
+        </td>
+        <td>
+            设备名称
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    $(function () {
+        getErrorList();
+        setInterval(getErrorList,20000);
+        //getErrorList();
+    });
+
+
+    function getErrorList() {
+        //console.log("ttt");
+        $.ajax({
+            url: "/Home/ErrorList",
+            dataType:"json",
+            type: "Post",
+            success: function (data) {
+                $("#errorInfo").html(data.time + "检测发现未联通IP总数：" + data.list.length);
+                $("#errorTable").html("");
+                $("#errorTable").append("<tr><th>序号</th><th>ip</th><th>设备名称</th></tr>");
+                for (var i = 0; i < data.list.length; i++) {
+                    $("#errorTable").append("<tr class='info'><td>" + (i + 1) + "</td><td>" + data.list[i].address + "</td><td>" + data.list[i].name + "</td></tr>");
+                }
+            },
+            error: function (ex) {
+
+            }
+        });
+    }
+</script>
